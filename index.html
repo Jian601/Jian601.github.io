@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        #container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+        
+        #number-21 {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 150px;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+        }
+        
+        #cake {
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 180px;
+            z-index: 3; /* 确保蛋糕在下层 */
+        }
+        
+        #flame {
+            position: absolute;
+            top: 250px; /* 火苗向下移动了15px */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4; /* 确保火苗在蛋糕上层 */
+        }
+        
+        #character {
+            position: absolute;
+            bottom: -78px;
+            left: 100px;
+            width: 160px;
+            height: 240px;
+        }
+        
+        #dialog {
+            position: absolute;
+            bottom: 56px;
+            left: 250px;
+            width: 220px;
+            height: 70px;
+            background-color: white;
+            border-radius: 15px;
+            border: 2px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+        }
+        
+        #dialog::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            border-width: 15px 10px 0;
+            border-style: solid;
+            border-color: white transparent;
+        }
+        
+        #controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            background: rgba(255,255,255,0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        #play-prompt {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        #play-button {
+            padding: 15px 30px;
+            font-size: 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="play-prompt">
+        点击开始生日祝福
+        <button id="play-button">开始</button>
+    </div>
+
+   <img id="background" src="背景.png" alt="Background">
+    
+    <div id="container">
+        <div id="number-21">21</div>
+        <img id="cake" src="下载 (1).png" alt="Cake">
+        <canvas id="flame"></canvas>
+        <img id="character" src="Amiya.png" alt="Character">
+        <div id="dialog">Happy Birthday</div>
+    </div>
+    
+    <div id="controls">
+        <button id="music-toggle">暂停音乐</button>
+    </div>
+    
+   <audio id="background-music" loop>
+  <source src="初音ミク n-buna Orangestar - スターナイトスノウ.mp3" type="audio/mpeg">
+</audio>
+    
+    <script>
+        // 获取元素
+        const playPrompt = document.getElementById('play-prompt');
+        const playButton = document.getElementById('play-button');
+        const music = document.getElementById('background-music');
+        const musicToggle = document.getElementById('music-toggle');
+        
+        // 火焰动画设置
+        const flameCanvas = document.getElementById('flame');
+        const flameCtx = flameCanvas.getContext('2d');
+        let flamePhase = 0;
+        
+        // 数字颜色动画
+        const number21 = document.getElementById('number-21');
+        let colorPhase = 0;
+        
+        // 初始设置火苗画布大小
+        flameCanvas.width = 18;
+        flameCanvas.height = 27;
+        
+        // 点击开始按钮后播放音乐并隐藏提示层
+        playButton.addEventListener('click', () => {
+            music.volume = 0.5;
+            music.play().then(() => {
+                playPrompt.style.display = 'none';
+                musicToggle.textContent = '暂停音乐';
+            }).catch(e => console.log('音乐播放失败:', e));
+        });
+        
+        // 音乐控制按钮
+        musicToggle.addEventListener('click', () => {
+            if (music.paused) {
+                music.play();
+                musicToggle.textContent = '暂停音乐';
+            } else {
+                music.pause();
+                musicToggle.textContent = '播放音乐';
+            }
+        });
+        
+        // 动画循环
+        function animate() {
+            // 更新火焰动画 - 速度减慢（原0.1 → 0.05）
+            flamePhase += 0.05;
+            const flameSize = 1.0 + Math.sin(flamePhase) * 0.1;
+            
+            // 重新设置画布大小以实现缩放效果
+            flameCanvas.width = 18 * flameSize;
+            flameCanvas.height = 27 * flameSize;
+            
+            // 清除画布
+            flameCtx.clearRect(0, 0, flameCanvas.width, flameCanvas.height);
+            
+            // 绘制黄色外焰
+            flameCtx.beginPath();
+            flameCtx.ellipse(
+                flameCanvas.width / 2,
+                flameCanvas.height / 2,
+                flameCanvas.width / 2,
+                flameCanvas.height / 2,
+                0,
+                0,
+                Math.PI * 2
+            );
+            flameCtx.fillStyle = 'rgb(255, 255, 0)';
+            flameCtx.fill();
+            
+            // 绘制橙色内焰
+            flameCtx.beginPath();
+            flameCtx.ellipse(
+                flameCanvas.width / 2,
+                flameCanvas.height / 2,
+                flameCanvas.width / 3,
+                flameCanvas.height / 3,
+                0,
+                0,
+                Math.PI * 2
+            );
+            flameCtx.fillStyle = 'rgb(255, 165, 0)';
+            flameCtx.fill();
+            
+            // 更新数字颜色（烟火效果）- 速度减慢（原0.05 → 0.02）
+            colorPhase += 0.02;
+            const r = Math.floor((Math.sin(colorPhase) + 1) * 127.5);
+            const g = Math.floor((Math.sin(colorPhase + 2) + 1) * 127.5);
+            const b = Math.floor((Math.sin(colorPhase + 4) + 1) * 127.5);
+            number21.style.color = `rgb(${r}, ${g}, ${b})`;
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // 启动动画
+        animate();
+    </script>
+</body>
+</html>
