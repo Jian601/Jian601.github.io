@@ -53,41 +53,43 @@
             z-index: 3;
         }
         
-        #flame {
-            position: absolute;
-            top: calc(35vh - 20px); /* 修改：基于蛋糕位置动态计算 */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 4;
-        }
+     #flame {
+    position: absolute;
+    top: calc(35vh + 5px); /* 从-20px改为+5px，火焰往下移 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+}
         
-        #character {
-            position: absolute;
-            bottom: 5vh; /* 修改：从-78px改为屏幕底部的5% */
-            left: 10vw; /* 修改：从100px改为屏幕左侧的10% */
-            width: 22vw; /* 修改：从160px改为屏幕宽度的22% */
-            max-width: 160px; /* 保留：电脑端最大宽度 */
-            height: auto; /* 新增：保持图片比例 */
-        }
+
+#character {
+    position: absolute;
+    bottom: 5vh;
+    left: 10vw;
+    width: 35vw; 
+    max-width: 180px; /* 从160px增大到180px，电脑端更大 */
+    height: auto;
+}
         
-        #dialog {
-            position: absolute;
-            bottom: 15vh; /* 修改：从56px改为屏幕底部的15% */
-            left: 30vw; /* 修改：从250px改为屏幕左侧的30% */
-            width: 30vw; /* 修改：从220px改为屏幕宽度的30% */
-            max-width: 220px; /* 保留：电脑端最大宽度 */
-            height: 12vw; /* 修改：从70px改为屏幕宽度的12% */
-            max-height: 70px; /* 保留：电脑端最大高度 */
-            background-color: white;
-            border-radius: 15px;
-            border: 2px solid black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: Arial, sans-serif;
-            font-size: 4vw; /* 修改：从20px改为屏幕宽度的4% */
-            max-font-size: 20px; /* 保留：电脑端最大字体 */
-        }
+       /* 对话框文字右移：增加左内边距，替代居中对齐 */
+#dialog {
+    position: absolute;
+    bottom: 15vh;
+    left: 30vw;
+    width: 30vw;
+    max-width: 220px;
+    height: 12vw;
+    max-height: 70px;
+    background-color: white;
+    border-radius: 15px;
+    border: 2px solid black;
+    display: flex;
+    align-items: center;
+    padding-left: 20px; /* 左内边距越大，文字越靠右 */
+    font-family: Arial, sans-serif;
+    font-size: 4vw;
+    max-font-size: 20px;
+}
         
         #dialog::after {
             content: '';
@@ -255,3 +257,4 @@
     </script>
 </body>
 </html>
+
