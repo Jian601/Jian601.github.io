@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 关键：添加viewport属性确保移动端正确缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy Birthday</title>
     <style>
         body {
@@ -18,59 +19,65 @@
             left: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover; /* 新增：背景图自适应屏幕，不拉伸 */
             z-index: 1;
         }
         
         #container {
             position: relative;
-            width: 800px;
-            height: 600px;
+            width: 100%; /* 修改：从固定800px改为100%适应屏幕 */
+            max-width: 800px; /* 保留：电脑端最大宽度 */
+            height: 100vh; /* 修改：从固定600px改为100%屏幕高度 */
             margin: 0 auto;
             z-index: 2;
         }
         
         #number-21 {
             position: absolute;
-            top: 90px;
+            top: 10vh; /* 修改：从90px改为屏幕高度的10% */
             left: 50%;
             transform: translateX(-50%);
-            font-size: 150px;
+            font-size: 20vw; /* 修改：从150px改为屏幕宽度的20% */
             font-weight: bold;
             font-family: Arial, sans-serif;
         }
         
         #cake {
             position: absolute;
-            top: 250px;
+            top: 35vh; /* 修改：从250px改为屏幕高度的35% */
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 180px;
-            z-index: 3; /* 确保蛋糕在下层 */
+            width: 30vw; /* 修改：从200px改为屏幕宽度的30% */
+            max-width: 200px; /* 保留：电脑端最大宽度 */
+            height: auto; /* 新增：保持图片比例 */
+            z-index: 3;
         }
         
         #flame {
             position: absolute;
-            top: 250px; /* 火苗向下移动了15px */
+            top: calc(35vh - 20px); /* 修改：基于蛋糕位置动态计算 */
             left: 50%;
             transform: translateX(-50%);
-            z-index: 4; /* 确保火苗在蛋糕上层 */
+            z-index: 4;
         }
         
         #character {
             position: absolute;
-            bottom: -78px;
-            left: 100px;
-            width: 160px;
-            height: 240px;
+            bottom: 5vh; /* 修改：从-78px改为屏幕底部的5% */
+            left: 10vw; /* 修改：从100px改为屏幕左侧的10% */
+            width: 22vw; /* 修改：从160px改为屏幕宽度的22% */
+            max-width: 160px; /* 保留：电脑端最大宽度 */
+            height: auto; /* 新增：保持图片比例 */
         }
         
         #dialog {
             position: absolute;
-            bottom: 56px;
-            left: 250px;
-            width: 220px;
-            height: 70px;
+            bottom: 15vh; /* 修改：从56px改为屏幕底部的15% */
+            left: 30vw; /* 修改：从250px改为屏幕左侧的30% */
+            width: 30vw; /* 修改：从220px改为屏幕宽度的30% */
+            max-width: 220px; /* 保留：电脑端最大宽度 */
+            height: 12vw; /* 修改：从70px改为屏幕宽度的12% */
+            max-height: 70px; /* 保留：电脑端最大高度 */
             background-color: white;
             border-radius: 15px;
             border: 2px solid black;
@@ -78,7 +85,8 @@
             align-items: center;
             justify-content: center;
             font-family: Arial, sans-serif;
-            font-size: 20px;
+            font-size: 4vw; /* 修改：从20px改为屏幕宽度的4% */
+            max-font-size: 20px; /* 保留：电脑端最大字体 */
         }
         
         #dialog::after {
@@ -99,6 +107,7 @@
             background: rgba(255,255,255,0.8);
             padding: 10px;
             border-radius: 5px;
+            font-size: 3vw; /* 新增：控制按钮字体自适应 */
         }
 
         #play-prompt {
@@ -114,14 +123,28 @@
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 24px;
+            font-size: 6vw; /* 修改：提示文字自适应屏幕 */
         }
 
         #play-button {
-            padding: 15px 30px;
-            font-size: 20px;
+            padding: 3vw 6vw; /* 修改：按钮大小自适应 */
+            font-size: 4vw; /* 修改：按钮文字自适应 */
             margin-top: 20px;
             cursor: pointer;
+        }
+
+        /* 针对手机小屏幕的额外优化 */
+        @media (max-width: 600px) {
+            #number-21 {
+                top: 8vh; /* 手机上数字位置上移 */
+                font-size: 25vw; /* 手机上数字更大 */
+            }
+            #cake {
+                top: 38vh; /* 手机上蛋糕位置下移 */
+            }
+            #dialog {
+                font-size: 5vw; /* 手机上对话框文字更大 */
+            }
         }
     </style>
 </head>
@@ -131,7 +154,7 @@
         <button id="play-button">开始</button>
     </div>
 
-   <img id="background" src="背景.png" alt="Background">
+    <img id="background" src="背景.png" alt="Background">
     
     <div id="container">
         <div id="number-21">21</div>
@@ -145,31 +168,27 @@
         <button id="music-toggle">暂停音乐</button>
     </div>
     
-   <audio id="background-music" loop>
-  <source src="初音ミク n-buna Orangestar - スターナイトスノウ.mp3" type="audio/mpeg">
-</audio>
+    <audio id="background-music" loop>
+        <source src="初音ミク n-buna Orangestar - スターナイトスノウ.mp3" type="audio/mpeg">
+    </audio>
     
     <script>
-        // 获取元素
+        // 原有JS逻辑保持不变
         const playPrompt = document.getElementById('play-prompt');
         const playButton = document.getElementById('play-button');
         const music = document.getElementById('background-music');
         const musicToggle = document.getElementById('music-toggle');
         
-        // 火焰动画设置
         const flameCanvas = document.getElementById('flame');
         const flameCtx = flameCanvas.getContext('2d');
         let flamePhase = 0;
         
-        // 数字颜色动画
         const number21 = document.getElementById('number-21');
         let colorPhase = 0;
         
-        // 初始设置火苗画布大小
         flameCanvas.width = 18;
         flameCanvas.height = 27;
         
-        // 点击开始按钮后播放音乐并隐藏提示层
         playButton.addEventListener('click', () => {
             music.volume = 0.5;
             music.play().then(() => {
@@ -178,7 +197,6 @@
             }).catch(e => console.log('音乐播放失败:', e));
         });
         
-        // 音乐控制按钮
         musicToggle.addEventListener('click', () => {
             if (music.paused) {
                 music.play();
@@ -189,20 +207,15 @@
             }
         });
         
-        // 动画循环
         function animate() {
-            // 更新火焰动画 - 速度减慢（原0.1 → 0.05）
             flamePhase += 0.05;
             const flameSize = 1.0 + Math.sin(flamePhase) * 0.1;
             
-            // 重新设置画布大小以实现缩放效果
             flameCanvas.width = 18 * flameSize;
             flameCanvas.height = 27 * flameSize;
             
-            // 清除画布
             flameCtx.clearRect(0, 0, flameCanvas.width, flameCanvas.height);
             
-            // 绘制黄色外焰
             flameCtx.beginPath();
             flameCtx.ellipse(
                 flameCanvas.width / 2,
@@ -216,7 +229,6 @@
             flameCtx.fillStyle = 'rgb(255, 255, 0)';
             flameCtx.fill();
             
-            // 绘制橙色内焰
             flameCtx.beginPath();
             flameCtx.ellipse(
                 flameCanvas.width / 2,
@@ -230,7 +242,6 @@
             flameCtx.fillStyle = 'rgb(255, 165, 0)';
             flameCtx.fill();
             
-            // 更新数字颜色（烟火效果）- 速度减慢（原0.05 → 0.02）
             colorPhase += 0.02;
             const r = Math.floor((Math.sin(colorPhase) + 1) * 127.5);
             const g = Math.floor((Math.sin(colorPhase + 2) + 1) * 127.5);
@@ -240,7 +251,6 @@
             requestAnimationFrame(animate);
         }
         
-        // 启动动画
         animate();
     </script>
 </body>
