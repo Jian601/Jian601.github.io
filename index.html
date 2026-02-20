@@ -1,270 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <!-- 关键：添加viewport属性确保移动端正确缩放 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Happy Birthday</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-        
-        #background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 新增：背景图自适应屏幕，不拉伸 */
-            z-index: 1;
-        }
-        
-        #container {
-            position: relative;
-            width: 100%; /* 修改：从固定800px改为100%适应屏幕 */
-            max-width: 800px; /* 保留：电脑端最大宽度 */
-            height: 100vh; /* 修改：从固定600px改为100%屏幕高度 */
-            margin: 0 auto;
-            z-index: 2;
-        }
-        
-        #number-21 {
-            position: absolute;
-            top: 10vh; /* 修改：从90px改为屏幕高度的10% */
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 20vw; /* 修改：从150px改为屏幕宽度的20% */
-            font-weight: bold;
-            font-family: Arial, sans-serif;
-        }
-        
-        #cake {
-            position: absolute;
-            top: 35vh; /* 修改：从250px改为屏幕高度的35% */
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30vw; /* 修改：从200px改为屏幕宽度的30% */
-            max-width: 200px; /* 保留：电脑端最大宽度 */
-            height: auto; /* 新增：保持图片比例 */
-            z-index: 3;
-        }
-        
-     #flame {
-    position: absolute;
-    top: calc(35vh + 24px); /*火焰往下移 */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 4;
-}
-        
+	<meta charset="UTF-8">
+	<!-- 关键：添加viewport属性确保移动端正确缩放 -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>Happy Birthday</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			min-height: 100vh;
+			overflow: hidden;
+		}
 
-#character {
-    position: absolute;
-    bottom: 9vh;
-    left: 1vw;
-    width: 35vw; 
-    max-width: 180px;
-    height: auto;
-}
-        
-       /* 对话框文字右移：增加左内边距，替代居中对齐 */
-#dialog {
-    position: absolute;
-    bottom: 24vh;
-    left: 30vw;
-    width: 30vw;
-    max-width: 220px;
-    height: 12vw;
-    max-height: 70px;
-    background-color: white;
-    border-radius: 15px;
-    border: 2px solid black;
-    display: flex;
-    align-items: center;
-    padding-left: 20px; /* 左内边距越大，文字越靠右 */
-    font-family: Arial, sans-serif;
-    font-size: 4vw;
-    max-font-size: 20px;
-}
-        
-        #dialog::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 30px;
-            border-width: 15px 10px 0;
-            border-style: solid;
-            border-color: white transparent;
-        }
-        
-        #controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10;
-            background: rgba(255,255,255,0.8);
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 3vw; /* 新增：控制按钮字体自适应 */
-        }
+		#background {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			/* 新增：背景图自适应屏幕，不拉伸 */
+			z-index: 1;
+		}
 
-        #play-prompt {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 6vw; /* 修改：提示文字自适应屏幕 */
-        }
+		#container {
+			position: relative;
+			width: 100%;
+			/* 修改：从固定800px改为100%适应屏幕 */
+			max-width: 800px;
+			/* 保留：电脑端最大宽度 */
+			height: 100vh;
+			/* 修改：从固定600px改为100%屏幕高度 */
+			margin: 0 auto;
+			z-index: 2;
+		}
 
-        #play-button {
-            padding: 3vw 6vw; /* 修改：按钮大小自适应 */
-            font-size: 4vw; /* 修改：按钮文字自适应 */
-            margin-top: 20px;
-            cursor: pointer;
-        }
+		#number-21 {
+			position: absolute;
+			top: 10vh;
+			/* 修改：从90px改为屏幕高度的10% */
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 20vw;
+			/* 修改：从150px改为屏幕宽度的20% */
+			font-weight: bold;
+			font-family: Arial, sans-serif;
+		}
 
-        /* 针对手机小屏幕的额外优化 */
-        @media (max-width: 600px) {
-            #number-21 {
-                top: 8vh; /* 手机上数字位置上移 */
-                font-size: 25vw; /* 手机上数字更大 */
-            }
-            #cake {
-                top: 38vh; /* 手机上蛋糕位置下移 */
-            }
-            #dialog {
-                font-size: 5vw; /* 手机上对话框文字更大 */
-            }
-        }
-    </style>
+		#cake {
+			position: absolute;
+			top: 35vh;
+			/* 修改：从250px改为屏幕高度的35% */
+			left: 50%;
+			transform: translateX(-50%);
+			width: 30vw;
+			/* 修改：从200px改为屏幕宽度的30% */
+			max-width: 200px;
+			/* 保留：电脑端最大宽度 */
+			height: auto;
+			/* 新增：保持图片比例 */
+			z-index: 3;
+		}
+
+		#flame {
+			position: absolute;
+			top: calc(35vh + 24px);
+			/*火焰往下移 */
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 4;
+		}
+
+
+		#character {
+			position: absolute;
+			bottom: 9vh;
+			left: 1vw;
+			width: 35vw;
+			max-width: 180px;
+			height: auto;
+		}
+
+		/* 对话框文字右移：增加左内边距，替代居中对齐 */
+		#dialog {
+			position: absolute;
+			bottom: 24vh;
+			left: 30vw;
+			width: 30vw;
+			max-width: 220px;
+			height: 12vw;
+			max-height: 70px;
+			background-color: white;
+			border-radius: 15px;
+			border: 2px solid black;
+			display: flex;
+			align-items: center;
+			padding-left: 20px;
+			/* 左内边距越大，文字越靠右 */
+			font-family: Arial, sans-serif;
+			font-size: 4vw;
+			max-font-size: 20px;
+		}
+
+		#dialog::after {
+			content: '';
+			position: absolute;
+			bottom: -15px;
+			left: 30px;
+			border-width: 15px 10px 0;
+			border-style: solid;
+			border-color: white transparent;
+		}
+
+		#controls {
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 10;
+			background: rgba(255, 255, 255, 0.8);
+			padding: 10px;
+			border-radius: 5px;
+			font-size: 3vw;
+			/* 新增：控制按钮字体自适应 */
+		}
+
+		#play-prompt {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.7);
+			z-index: 100;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 6vw;
+			/* 修改：提示文字自适应屏幕 */
+		}
+
+		#play-button {
+			padding: 3vw 6vw;
+			/* 修改：按钮大小自适应 */
+			font-size: 4vw;
+			/* 修改：按钮文字自适应 */
+			margin-top: 20px;
+			cursor: pointer;
+		}
+
+		/* 针对手机小屏幕的额外优化 */
+		@media (max-width: 600px) {
+			#number-21 {
+				top: 8vh;
+				/* 手机上数字位置上移 */
+				font-size: 25vw;
+				/* 手机上数字更大 */
+			}
+
+			#cake {
+				top: 38vh;
+				/* 手机上蛋糕位置下移 */
+			}
+
+			#dialog {
+				font-size: 5vw;
+				/* 手机上对话框文字更大 */
+			}
+		}
+	</style>
 </head>
+
 <body>
-    <div id="play-prompt">
-        点击开始生日祝福
-        <button id="play-button">开始</button>
-    </div>
+	<div id="play-prompt">
+		点击开始生日祝福
+		<button id="play-button">开始</button>
+	</div>
 
-    <img id="background" src="背景.png" alt="Background">
-    
-    <div id="container">
-        <div id="number-21">21</div>
-        <img id="cake" src="下载 (1).png" alt="Cake">
-        <canvas id="flame"></canvas>
-        <img id="character" src="Amiya.png" alt="Character">
-        <div id="dialog">Happy Birthday！</div>
-    </div>
-    
-    <div id="controls">
-        <button id="music-toggle">暂停音乐</button>
-    </div>
-    
-    <audio id="background-music" loop>
-        <source src="初音ミク n-buna Orangestar - スターナイトスノウ.mp3" type="audio/mpeg">
-    </audio>
-    
-    <script>
-        // 原有JS逻辑保持不变
-        const playPrompt = document.getElementById('play-prompt');
-        const playButton = document.getElementById('play-button');
-        const music = document.getElementById('background-music');
-        const musicToggle = document.getElementById('music-toggle');
-        
-        const flameCanvas = document.getElementById('flame');
-        const flameCtx = flameCanvas.getContext('2d');
-        let flamePhase = 0;
-        
-        const number21 = document.getElementById('number-21');
-        let colorPhase = 0;
-        
-        flameCanvas.width = 18;
-        flameCanvas.height = 27;
-        
-        playButton.addEventListener('click', () => {
-            music.volume = 0.5;
-            music.play().then(() => {
-                playPrompt.style.display = 'none';
-                musicToggle.textContent = '暂停音乐';
-            }).catch(e => console.log('音乐播放失败:', e));
-        });
-        
-        musicToggle.addEventListener('click', () => {
-            if (music.paused) {
-                music.play();
-                musicToggle.textContent = '暂停音乐';
-            } else {
-                music.pause();
-                musicToggle.textContent = '播放音乐';
-            }
-        });
-        
-        function animate() {
-            flamePhase += 0.05;
-            const flameSize = 1.0 + Math.sin(flamePhase) * 0.1;
-            
-            flameCanvas.width = 18 * flameSize;
-            flameCanvas.height = 27 * flameSize;
-            
-            flameCtx.clearRect(0, 0, flameCanvas.width, flameCanvas.height);
-            
-            flameCtx.beginPath();
-            flameCtx.ellipse(
-                flameCanvas.width / 2,
-                flameCanvas.height / 2,
-                flameCanvas.width / 2,
-                flameCanvas.height / 2,
-                0,
-                0,
-                Math.PI * 2
-            );
-            flameCtx.fillStyle = 'rgb(255, 255, 0)';
-            flameCtx.fill();
-            
-            flameCtx.beginPath();
-            flameCtx.ellipse(
-                flameCanvas.width / 2,
-                flameCanvas.height / 2,
-                flameCanvas.width / 3,
-                flameCanvas.height / 3,
-                0,
-                0,
-                Math.PI * 2
-            );
-            flameCtx.fillStyle = 'rgb(255, 165, 0)';
-            flameCtx.fill();
-            
-            colorPhase += 0.02;
-            const r = Math.floor((Math.sin(colorPhase) + 1) * 127.5);
-            const g = Math.floor((Math.sin(colorPhase + 2) + 1) * 127.5);
-            const b = Math.floor((Math.sin(colorPhase + 4) + 1) * 127.5);
-            number21.style.color = `rgb(${r}, ${g}, ${b})`;
-            
-            requestAnimationFrame(animate);
-        }
-        
-        animate();
-    </script>
+	<img id="background" src="背景.png" alt="Background">
+
+	<div id="container">
+		<div id="number-21">21</div>
+		<img id="cake" src="下载 (1).png" alt="Cake">
+		<canvas id="flame"></canvas>
+		<img id="character" src="Amiya.png" alt="Character">
+		<div id="dialog">Happy Birthday！</div>
+	</div>
+
+	<div id="controls">
+		<button id="music-toggle">暂停音乐</button>
+	</div>
+
+	<audio id="background-music" loop>
+		<source src="初音ミク n-buna Orangestar - スターナイトスノウ.mp3" type="audio/mpeg">
+	</audio>
+
+	<script>
+		// 原有JS逻辑保持不变
+		const playPrompt = document.getElementById('play-prompt');
+		const playButton = document.getElementById('play-button');
+		const music = document.getElementById('background-music');
+		const musicToggle = document.getElementById('music-toggle');
+
+		const flameCanvas = document.getElementById('flame');
+		const flameCtx = flameCanvas.getContext('2d');
+		let flamePhase = 0;
+
+		const number21 = document.getElementById('number-21');
+		let colorPhase = 0;
+
+		flameCanvas.width = 18;
+		flameCanvas.height = 27;
+
+		playButton.addEventListener('click', () => {
+			music.volume = 0.5;
+			music.play().then(() => {
+				playPrompt.style.display = 'none';
+				musicToggle.textContent = '暂停音乐';
+			}).catch(e => console.log('音乐播放失败:', e));
+		});
+
+		musicToggle.addEventListener('click', () => {
+			if (music.paused) {
+				music.play();
+				musicToggle.textContent = '暂停音乐';
+			} else {
+				music.pause();
+				musicToggle.textContent = '播放音乐';
+			}
+		});
+
+		function animate() {
+			flamePhase += 0.05;
+			const flameSize = 1.0 + Math.sin(flamePhase) * 0.1;
+
+			flameCanvas.width = 18 * flameSize;
+			flameCanvas.height = 27 * flameSize;
+
+			flameCtx.clearRect(0, 0, flameCanvas.width, flameCanvas.height);
+
+			flameCtx.beginPath();
+			flameCtx.ellipse(
+				flameCanvas.width / 2,
+				flameCanvas.height / 2,
+				flameCanvas.width / 2,
+				flameCanvas.height / 2,
+				0,
+				0,
+				Math.PI * 2
+			);
+			flameCtx.fillStyle = 'rgb(255, 255, 0)';
+			flameCtx.fill();
+
+			flameCtx.beginPath();
+			flameCtx.ellipse(
+				flameCanvas.width / 2,
+				flameCanvas.height / 2,
+				flameCanvas.width / 3,
+				flameCanvas.height / 3,
+				0,
+				0,
+				Math.PI * 2
+			);
+			flameCtx.fillStyle = 'rgb(255, 165, 0)';
+			flameCtx.fill();
+
+			colorPhase += 0.02;
+			const r = Math.floor((Math.sin(colorPhase) + 1) * 127.5);
+			const g = Math.floor((Math.sin(colorPhase + 2) + 1) * 127.5);
+			const b = Math.floor((Math.sin(colorPhase + 4) + 1) * 127.5);
+			number21.style.color = `rgb(${r}, ${g}, ${b})`;
+
+			requestAnimationFrame(animate);
+		}
+
+		animate();
+	</script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
